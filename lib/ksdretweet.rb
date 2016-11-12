@@ -1,9 +1,11 @@
 require 'twitter'
 require 'yaml'
+require 'logger'
 require 'ksdretweet/decision_logic'
 
 class Ksdretweet
     def initialize
+        @logger = Logger.new("/var/log/ruby/ksdretweet_logger.log",16)
         #account_config = YAML.load_file("ksdretweet/youraccount.yml")
         account_config = YAML.load_file("/usr/local/etc/twitter/ksdretweet.yml")
         @rest_client = Twitter::REST::Client.new do |config|
@@ -25,6 +27,10 @@ class Ksdretweet
         @streaming_client.user do |object|
             if object.is_a?(Twitter::Tweet)
                 @rest_client.retweet(object.id) if shoud_retweet?(object)
+		@logger.info(object.id)
+            end
+            if object.is_a?(Twitter::Streaming::StallWarning)
+                @logger.warn(object.message)
             end
         end
     end
