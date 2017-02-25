@@ -1,3 +1,4 @@
+require 'natto'
 class DecisionLogic
     def include_word? (text)
        rp1 = Regexp.new("^RT*")
@@ -15,7 +16,11 @@ class DecisionLogic
              return true if text.include?("楠田")
              return false
            end
-           return true
+           nm = Natto::MeCab.new
+           nm.parse(text) do |n|
+              return true if n.surface == "あいな"
+           end
+           return false
        end
        includeWordList = ["楠田","亜衣奈","くっすん","くすリル","kusudaaina"]
        includeWordList.each do|word|
