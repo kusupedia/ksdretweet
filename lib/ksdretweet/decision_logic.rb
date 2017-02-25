@@ -7,6 +7,14 @@ class DecisionLogic
              return true if text.include?("楠田")
              return false
            end
+           if text.include?("鈴木") then
+             return true if text.include?("楠田")
+             return false
+           end
+           if text.include?("あいななごはん") then
+             return true if text.include?("楠田")
+             return false
+           end
            return true
        end
        includeWordList = ["楠田","亜衣奈","くっすん","くすリル","kusudaaina"]
