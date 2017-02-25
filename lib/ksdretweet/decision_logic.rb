@@ -20,7 +20,6 @@ class DecisionLogic
            nm.parse(text) do |n|
               return true if n.surface == "あいな"
            end
-           return false
        end
        includeWordList = ["楠田","亜衣奈","くっすん","くすリル","kusudaaina"]
        includeWordList.each do|word|
