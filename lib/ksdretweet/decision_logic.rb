@@ -3,7 +3,9 @@ class DecisionLogic
     def include_word? (text)
        rp1 = Regexp.new("^RT*")
        return false if rp1 =~ text
+       return false if text.include?("ksdretweet")
        if text.include?("あいな") then
+           return false if text.include?("あいなぷぅ")
            if text.include?("相羽") then
              return true if text.include?("楠田")
              return false

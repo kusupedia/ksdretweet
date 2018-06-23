@@ -37,6 +37,7 @@ class Ksdretweet
     def shoud_retweet?(tweet)
         return false if tweet.user.screen_name == @my_user.screen_name
         return false if tweet.source.include?("twittbot.net")
+        return false if tweet.source.include?("twiroboJP")
         return @decision_logic.include_word?(tweet.text)
     end
 end
