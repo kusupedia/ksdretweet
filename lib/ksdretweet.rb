@@ -20,24 +20,18 @@ class Ksdretweet
             config.access_token        = account_config["access_token"]
             config.access_token_secret = account_config["access_token_secret"]
         end
-        @my_user = @rest_client.user
-        @decision_logic = DecisionLogic.new
+        @ids = @rest_client.friend_ids("ksdretweet")
+        @decision_logic = DecisionLogic.new(@ids)
     end
     def run
-        @streaming_client.user do |object|
+        @streaming_client.filter(follow:@ids.entries.join(",")) do |object|
             if object.is_a?(Twitter::Tweet)
-                @rest_client.retweet(object.id) if shoud_retweet?(object)
+                @rest_client.update(object.id) if @decision_logic.shoud_retweet?(object)
 		@logger.info(object.id)
             end
             if object.is_a?(Twitter::Streaming::StallWarning)
                 @logger.warn(object.message)
             end
         end
-    end
-    def shoud_retweet?(tweet)
-        return false if tweet.user.screen_name == @my_user.screen_name
-        return false if tweet.source.include?("twittbot.net")
-        return false if tweet.source.include?("twiroboJP")
-        return @decision_logic.include_word?(tweet.text)
     end
 end
