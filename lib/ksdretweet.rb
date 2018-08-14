@@ -26,7 +26,7 @@ class Ksdretweet
     def run
         @streaming_client.filter(follow:@ids.entries.join(",")) do |object|
             if object.is_a?(Twitter::Tweet)
-                @rest_client.update(object.id) if @decision_logic.shoud_retweet?(object)
+                @rest_client.retweet(object.id) if @decision_logic.shoud_retweet?(object)
 		@logger.info(object.id)
             end
             if object.is_a?(Twitter::Streaming::StallWarning)
