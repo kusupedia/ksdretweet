@@ -1,8 +1,22 @@
+require 'twitter'
 require 'natto'
 class DecisionLogic
+    def initialize(ids)
+      @ids = ids
+    end
+
+    def shoud_retweet?(tweet)
+        return false if tweet.retweet?
+        return false if tweet.source.include?("twittbot.net")
+        return false if tweet.source.include?("twiroboJP")
+        return false unless @ids.include?(tweet.user.id)
+        if tweet.reply? then
+          return false unless @ids.include?(tweet.in_reply_to_user_id)
+        end
+        return include_word?(tweet.text)
+    end
+
     def include_word? (text)
-       rp1 = Regexp.new("^RT*")
-       return false if rp1 =~ text
        return false if text.include?("ksdretweet")
        if text.include?("あいな") then
            return false if text.include?("あいなぷぅ")
