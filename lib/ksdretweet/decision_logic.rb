@@ -13,7 +13,8 @@ class DecisionLogic
         if tweet.reply? then
           return false unless @ids.include?(tweet.in_reply_to_user_id)
         end
-        return include_word?(tweet.text)
+        full_text = !tweet.attrs[:extended_tweet].nil? ? tweet.attrs[:extended_tweet][:full_text] : tweet.text
+        return include_word?(full_text)
     end
 
     def include_word? (text)
