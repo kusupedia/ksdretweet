@@ -38,7 +38,14 @@ class DecisionLogic
               return true if n.surface == "あいな"
            end
        end
-       includeWordList = ["楠田","亜衣奈","くっすん","くすリル","kusudaaina"]
+       if text.include?("くっすん") then
+         if text.include?("楠雄二朗") then
+           return true if text.include?("楠田")
+           return false
+         end
+         return true
+       end
+       includeWordList = ["楠田","亜衣奈","くすリル","kusudaaina"]
        includeWordList.each do|word|
            return true if text.include?(word)
        end
