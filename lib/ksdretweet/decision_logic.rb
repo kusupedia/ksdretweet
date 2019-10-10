@@ -33,6 +33,10 @@ class DecisionLogic
              return true if text.include?("楠田")
              return false
            end
+           if text.include?("らぶりーあいなちゃん") then
+             return true if text.include?("楠田")
+             return false
+           end
            nm = Natto::MeCab.new
            nm.parse(text) do |n|
               return true if n.surface == "あいな"
