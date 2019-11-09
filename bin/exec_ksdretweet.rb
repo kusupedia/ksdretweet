@@ -1,4 +1,4 @@
-$LOAD_PATH[0,0] = File.join(File.dirname(__FILE__), '..', 'lib')
+$LOAD_PATH[0, 0] = File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'ksdretweet'
 
