@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'twitter'
 require 'natto'
 class DecisionLogic
@@ -14,11 +16,15 @@ class DecisionLogic
     if tweet.reply?
       return false unless @ids.include?(tweet.in_reply_to_user_id)
     end
-    full_text = !tweet.attrs[:extended_tweet].nil? ? tweet.attrs[:extended_tweet][:full_text] : tweet.text
-    return include_word?(full_text)
+    full_text = if tweet.attrs[:extended_tweet].nil?
+                  tweet.text
+                else
+                  tweet.attrs[:extended_tweet][:full_text]
+                end
+    include_word?(full_text)
   end
 
-  def include_word? (text)
+  def include_word?(text)
     return false if text.include?('ksdretweet')
 
     if text.include?('あいな')
@@ -56,6 +62,6 @@ class DecisionLogic
     include_word_list.each do |word|
       return true if text.include?(word)
     end
-    return false
+    false
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'twitter'
 require 'yaml'
 require 'logger'
@@ -5,7 +7,7 @@ require 'ksdretweet/decision_logic'
 
 class Ksdretweet
   def initialize
-    @logger = Logger.new('/var/log/ruby/ksdretweet_logger.log',16)
+    @logger = Logger.new('/var/log/ruby/ksdretweet_logger.log', 16)
     # account_config = YAML.load_file('ksdretweet/youraccount.yml')
     account_config = YAML.load_file('/usr/local/etc/twitter/ksdretweet.yml')
     @rest_client = Twitter::REST::Client.new do |config|
