@@ -3,7 +3,9 @@
 require 'twitter'
 require 'yaml'
 require 'logger'
+require 'aws-sdk'
 require 'ksdretweet/decision_logic'
+require 'ksdretweet/image_url_message'
 
 class Ksdretweet
   def initialize
@@ -24,12 +26,30 @@ class Ksdretweet
     end
     @ids = @rest_client.friend_ids('ksdretweet')
     @decision_logic = DecisionLogic.new(@ids)
+
+    @sqs = Aws::SQS::Client.new(region: 'ap-northeast-1')
+
+    image_queue_name = 'image_analysis.fifo'
+    @image_queue_url = sqs.get_queue_url(queue_name: image_queue_name).queue_url
   end
 
   def run
     @streaming_client.filter(follow: @ids.entries.join(',')) do |object|
       if object.is_a?(Twitter::Tweet)
-        @rest_client.retweet(object.id) if @decision_logic.shoud_retweet?(object)
+        if @decision_logic.shoud_retweet?(object)
+          @rest_client.retweet(object.id)
+        else
+          image_url_message = ImageUrlMessage.new(object)
+          if image_url_message.message?
+            sqs.send_message({
+              queue_url: image_queue_url,
+              message_group_id: '0',
+              message_deduplication_id: object.id.to_s,
+              message_body: image_url.message,
+              message_attributes: {}
+            })
+          end
+        end
         @logger.info(object.id)
       end
       if object.is_a?(Twitter::Streaming::StallWarning)
