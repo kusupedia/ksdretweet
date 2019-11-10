@@ -36,22 +36,29 @@ class Ksdretweet
   def run
     @streaming_client.filter(follow: @ids.entries.join(',')) do |object|
       if object.is_a?(Twitter::Tweet)
+        @logger.info(object.id)
         if @decision_logic.shoud_retweet?(object)
           @rest_client.retweet(object.id)
+          next
 
-        elsif @ids.include?(object.user.id) && !object.retweet?
-          image_url_message = ImageUrlMessage.new(object)
-          if image_url_message.message?
-            @sqs.send_message({
-              queue_url: @image_queue_url,
-              message_group_id: '0',
-              message_deduplication_id: object.id.to_s,
-              message_body: image_url_message.message,
-              message_attributes: {}
-            })
-          end
+        if object.reply?
+          next unless @ids.include?(object.in_reply_to_user_id)
         end
-        @logger.info(object.id)
+
+        if !@ids.include?(object.user.id) || object.retweet?
+          next
+        end
+
+        image_url_message = ImageUrlMessage.new(object)
+        if image_url_message.message?
+          @sqs.send_message({
+            queue_url: @image_queue_url,
+            message_group_id: '0',
+            message_deduplication_id: object.id.to_s,
+            message_body: image_url_message.message,
+            message_attributes: {}
+          })
+        end
       end
       if object.is_a?(Twitter::Streaming::StallWarning)
         @logger.warn(object.message)
