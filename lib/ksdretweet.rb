@@ -40,6 +40,7 @@ class Ksdretweet
         if @decision_logic.shoud_retweet?(object)
           @rest_client.retweet(object.id)
           next
+        end
 
         if object.reply?
           next unless @ids.include?(object.in_reply_to_user_id)
