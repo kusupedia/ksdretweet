@@ -30,34 +30,33 @@ class DecisionLogic
     if text.include?('あいな')
       return false if text.include?('あいなぷぅ')
 
-      if text.include?('相羽')
-        return true if text.include?('楠田')
+      exclude_word_list = %w[相羽 鈴木 あいななごはん らぶりーあいなちゃん]
+      exclude_word_list.each do |exclude_word|
+        if text.include?(exclude_word)
+          return true if text.include?('楠田')
 
-        return false
-      end
-      if text.include?('鈴木')
-        return true if text.include?('楠田')
-
-        return false
-      end
-      if text.include?('あいななごはん')
-        return true if text.include?('楠田')
-
-        return false
+          return false
+        end
       end
       nm = Natto::MeCab.new
       nm.parse(text) do |n|
         return true if n.surface == 'あいな'
       end
     end
-    if text.include?('くっすん')
-      if text.include?('楠雄二朗')
-        return true if text.include?('楠田')
 
-        return false
+    if text.include?('くっすん')
+      exclude_word_list = %w[楠雄二朗]
+      exclude_word_list.each do |exclude_word|
+        if text.include?(exclude_word)
+          return true if text.include?('楠田')
+
+          return false
+        end
       end
+
       return true
     end
+
     include_word_list = %w[楠田 亜衣奈 くすリル kusudaaina]
     include_word_list.each do |word|
       return true if text.include?(word)
