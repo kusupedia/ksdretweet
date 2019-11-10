@@ -22,7 +22,7 @@ class ImageUrlMessage
     if urls.empty?
       @message = nil
     else
-      message_hash = { id: id, image_urls: urls }
+      message_hash = { id: tweet.id, image_urls: urls }
       @message = JSON.generate(message_hash)
     end
   end
