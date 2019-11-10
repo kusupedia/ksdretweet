@@ -38,7 +38,8 @@ class Ksdretweet
       if object.is_a?(Twitter::Tweet)
         if @decision_logic.shoud_retweet?(object)
           @rest_client.retweet(object.id)
-        else
+
+        elsif @ids.include?(object.id) && !object.retweet?
           image_url_message = ImageUrlMessage.new(object)
           if image_url_message.message?
             @sqs.send_message({
