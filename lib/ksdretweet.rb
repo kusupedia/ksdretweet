@@ -37,21 +37,24 @@ class Ksdretweet
     @streaming_client.filter(follow: @ids.entries.join(',')) do |object|
       if object.is_a?(Twitter::Tweet)
         @logger.info(object.id)
+
+        # remove userstream trash
+        next if object.retweet?
+        next if object.source.include?('twittbot.net')
+        next if object.source.include?('twiroboJP')
+        next if object.reply? && !@ids.include?(object.in_reply_to_user_id)
+        next unless @ids.include?(object.user.id)
+
+        # word base retweet
         if @decision_logic.shoud_retweet?(object)
           @rest_client.retweet(object.id)
           next
         end
 
-        if object.reply?
-          next unless @ids.include?(object.in_reply_to_user_id)
-        end
-
-        if !@ids.include?(object.user.id) || object.retweet?
-          next
-        end
-
+        # image base retweet
         image_url_message = ImageUrlMessage.new(object)
         if image_url_message.message?
+          # push sqs if have media
           @sqs.send_message({
             queue_url: @image_queue_url,
             message_group_id: '0',

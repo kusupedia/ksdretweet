@@ -8,14 +8,6 @@ class DecisionLogic
   end
 
   def shoud_retweet?(tweet)
-    return false if tweet.retweet?
-    return false if tweet.source.include?('twittbot.net')
-    return false if tweet.source.include?('twiroboJP')
-    return false unless @ids.include?(tweet.user.id)
-
-    if tweet.reply?
-      return false unless @ids.include?(tweet.in_reply_to_user_id)
-    end
     full_text = if tweet.attrs[:extended_tweet].nil?
                   tweet.text
                 else
