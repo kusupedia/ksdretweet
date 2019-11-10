@@ -42,10 +42,10 @@ class Ksdretweet
           image_url_message = ImageUrlMessage.new(object)
           if image_url_message.message?
             @sqs.send_message({
-              queue_url: image_queue_url,
+              queue_url: @image_queue_url,
               message_group_id: '0',
               message_deduplication_id: object.id.to_s,
-              message_body: image_url.message,
+              message_body: image_url_message.message,
               message_attributes: {}
             })
           end
