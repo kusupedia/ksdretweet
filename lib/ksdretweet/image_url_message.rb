@@ -13,7 +13,7 @@ class ImageUrlMessage
         urls << media.media_uri_https
       end
     else
-      unless tweet.attrs[:extended_tweet][:entities][:media]&.nil?
+      unless tweet.attrs[:extended_tweet][:entities][:media].nil?
         tweet.attrs[:extended_tweet][:entities][:media].each do |media|
           urls << media[:media_url_https]
         end
