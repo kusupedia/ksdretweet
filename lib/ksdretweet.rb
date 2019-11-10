@@ -30,7 +30,7 @@ class Ksdretweet
     @sqs = Aws::SQS::Client.new(region: 'ap-northeast-1')
 
     image_queue_name = 'image_analysis.fifo'
-    @image_queue_url = sqs.get_queue_url(queue_name: image_queue_name).queue_url
+    @image_queue_url = @sqs.get_queue_url(queue_name: image_queue_name).queue_url
   end
 
   def run
@@ -41,7 +41,7 @@ class Ksdretweet
         else
           image_url_message = ImageUrlMessage.new(object)
           if image_url_message.message?
-            sqs.send_message({
+            @sqs.send_message({
               queue_url: image_queue_url,
               message_group_id: '0',
               message_deduplication_id: object.id.to_s,
