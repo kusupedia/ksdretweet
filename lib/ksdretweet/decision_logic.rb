@@ -49,7 +49,20 @@ class DecisionLogic
       return true
     end
 
-    include_word_list = %w[楠田 亜衣奈 くすリル kusudaaina]
+    if text.include?('楠田')
+      exclude_word_list = %w[敏之]
+      exclude_word_list.each do |exclude_word|
+        if text.include?(exclude_word)
+          return true if text.include?('亜衣奈')
+
+          return false
+        end
+      end
+
+      return true
+    end
+
+    include_word_list = %w[亜衣奈 くすリル kusudaaina]
     include_word_list.each do |word|
       return true if text.include?(word)
     end
