@@ -22,7 +22,7 @@ class DecisionLogic
     if text.include?('あいな')
       return false if text.include?('あいなぷぅ')
 
-      exclude_word_list = %w[相羽 鈴木 あいななごはん らぶりーあいなちゃん]
+      exclude_word_list = %w[相羽 鈴木 瑞原 あいななごはん らぶりーあいなちゃん]
       exclude_word_list.each do |exclude_word|
         if text.include?(exclude_word)
           return true if text.include?('楠田')
@@ -50,7 +50,7 @@ class DecisionLogic
     end
 
     if text.include?('楠田')
-      exclude_word_list = %w[敏之]
+      exclude_word_list = %w[敏之 ラジプリ]
       exclude_word_list.each do |exclude_word|
         if text.include?(exclude_word)
           return true if text.include?('亜衣奈')
