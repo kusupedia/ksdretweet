@@ -50,7 +50,7 @@ class DecisionLogic
     end
 
     if text.include?('楠田')
-      exclude_word_list = %w[敏之 ラジプリ]
+      exclude_word_list = %w[敏之 ラジプリ らら]
       exclude_word_list.each do |exclude_word|
         if text.include?(exclude_word)
           return true if text.include?('亜衣奈')
